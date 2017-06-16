@@ -1,0 +1,24 @@
+{
+  "name": "destinyservices",
+  "version": "0.0.0",
+  "description": "Web services for destiny purposes",
+  "main": "src/server.js",
+  "dependencies": {
+    "express": "^4.15.3",
+    "mrdandandan-destiny-api-module": "^0.0.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Danny Miller",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrdandandan/destinyservices.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mrdandandan/destinyservices/issues"
+  },
+  "homepage": "https://github.com/mrdandandan/destinyservices#readme"
+}
