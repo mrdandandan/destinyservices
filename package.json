@@ -4,8 +4,10 @@
   "description": "Web services for destiny purposes",
   "main": "src/server.js",
   "dependencies": {
+    "api-request-base": "0.0.4",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
+    "lodash": "^4.17.4",
     "mrdandandan-destiny-api-module": "^0.0.6"
   },
   "devDependencies": {},

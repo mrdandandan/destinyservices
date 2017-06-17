@@ -2,7 +2,23 @@ const router = require('express').Router();
 let matchmaking = require('./matchmaking');
 
 matchmaking.forEach(endpoint => {
-    router[endpoint.method.toLowerCase()](`matchmaking/${endpoint.route}`, endpoint.routeHandler);
+    const route = `/matchmaking/${endpoint.route}`;
+    const method = endpoint.method.toLowerCase();
+    router[method](route, endpoint.handleRequest);
+});
+
+router.get('/reflect', (req, res) => {
+    let routes = {
+        matchmaking: matchmaking.reduce((output, endpoint) => {
+            output[endpoint.name] = {
+                route: endpoint.route,
+                method: endpoint.method
+            };
+            return output;
+        }, {})
+    };
+
+    res.json(routes);
 });
 
 
