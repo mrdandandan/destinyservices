@@ -66,15 +66,14 @@ let membershipIdsEndpoint = new ApiEndpoint(
                             arr = output.bravo;
                             break;
                     }
-                    arr.push(
-                        displayName,
-                        aggregateStats
-                    );
+                    arr.push(displayName);
+                    output.aggregateStats[displayName] = aggregateStats;
 
                     return output;
                 }, {
                     alpha: [],
-                    bravo: []
+                    bravo: [],
+                    aggregateStats: {}
                 })
             })
             .catch(error => {
@@ -140,7 +139,7 @@ function _getCharactersWithStats(membershipId, platform, activityMode = ACTIVITY
                         allStats = allStats ? allStats.allTime : undefined;
 
                         return {
-                            displayName: displayNameResponse.bungieNetUser.displayName,
+                            displayName: displayNameResponse.destinyAccounts[0].userInfo.displayName,
                             membershipId: character.characterBase.membershipId,
                             characterId: character.characterBase.characterId,
                             race: RACE_HASH.toString(character.characterBase.raceHash),
