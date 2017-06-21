@@ -9,15 +9,23 @@ class Convert {
     static toInt(value) {
         return +value.toString().replace(/,/g, '');
     }
+
     static toRoundedValue(value, places) {
         return +(Math.round(`${value}e+${places}`) + `e-${places}`);
     }
+
+    static toUncapitalized(word) {
+        return word[0].toLowerCase() + word.substr(1);
+    }
+
     static membershipTypeToPlatform(membershipTypeId) {
         return membershipType.toString(+membershipTypeId);
     }
+
     static platformToMembershipType(platform) {
         return membershipType[platform];
     }
+
     static arrayToChunksOf(array, size) {
         var sets = [];
         var chunks = array.length / size;

@@ -1,9 +1,11 @@
 class ApiEndpoint {
-    constructor(name, route, method, requestHandler) {
+    constructor({name, route, query = [], body = [], method, requestHandler}) {
         this.name = name;
         this.route = route;
         this.method = method.toUpperCase();
         this.requestHandler = requestHandler;
+        this.query = query;
+        this.body = body;
 
         this.handleRequest = this.handleRequest.bind(this);
     }
