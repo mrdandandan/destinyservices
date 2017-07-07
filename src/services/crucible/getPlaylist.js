@@ -1,5 +1,6 @@
 const {PLATFORM} = require('../../constants');
 const CrucibleMapCollection = require('../../utilitis/data/CrucibleMapCollection');
+const {GROUPING} = require('../../utilitis/data/CrucibleMap');
 
 let ApiEndpoint = require('../../utilitis/ApiEndpoint');
 
