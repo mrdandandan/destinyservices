@@ -12,7 +12,6 @@ let aggregateStatsEndpoint = new ApiEndpoint({
     query: ['activityMode:optional'],
     method: 'GET',
     requestHandler: ({platform, displayName}, {activityMode = ACTIVITY_MODE.AllPvP}) => {
-        console.log(platform, displayName, activityMode);
 
         return getMembershipId(displayName, platform)
             .then(membershipId => bungie.account.summary({membershipType: platform, membershipId}))

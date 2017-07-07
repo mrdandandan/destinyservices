@@ -13,7 +13,19 @@ class ApiEndpoint {
     handleRequest(req, res) {
         this[this.method](...arguments)
             .then(output => {
-                res.json(output);
+                let response = {
+                    data: output,
+                    status: 'success'
+                };
+                res.json(response);
+            })
+            .catch(error => {
+                let response = {
+                    details: error.details,
+                    message: error.message,
+                    status: 'error'
+                };
+                res.json(response);
             });
     }
 

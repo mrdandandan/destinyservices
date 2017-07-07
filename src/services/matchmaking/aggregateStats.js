@@ -12,7 +12,14 @@ let aggregateStatsEndpoint = new ApiEndpoint({
     method: 'GET',
     requestHandler: ({platform}, {displayNames = '', activityMode = ACTIVITY_MODE.AllPvP}) => {
         displayNames = displayNames.split(',');
-        console.log(platform, displayNames, activityMode);
+        if(displayNames.length % 2 === 1) {
+            return Promise.reject({
+                details: {
+                    displayNames
+                },
+                message: `Number of displayNames provided should be even`
+            });
+        }
 
         let promises = displayNames.map(displayName => playerAggregateStatsEndpoint.requestHandler({platform, displayName}, {activityMode}));
         return Promise.all(promises)
@@ -27,6 +34,7 @@ module.exports = aggregateStatsEndpoint;
 function makeTeams(players) {
     let alpha = [],
         bravo = [];
+
 
     let isAlpha = true;
     while (players.length) {
