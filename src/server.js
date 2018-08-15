@@ -5,7 +5,8 @@ let app = require('express')(),
     bodyParser = require('body-parser'),
     port = process.env.PORT || 8081;
 
-DestinyApiRequest.setApiKey(process.env.BUNGIE_API_KEY);
+// DestinyApiRequest.setApiKey(process.env.BUNGIE_API_KEY);
+DestinyApiRequest.setApiKey('f8f0e9ab876644c8a37728121619bb74');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 

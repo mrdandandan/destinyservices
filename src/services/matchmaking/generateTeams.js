@@ -1,29 +1,32 @@
 const Convert = require('../../utilitis/Convert');
 
 function generateTeams(players = [], aggregate = 'killsDeathsRatio') {
-    const getAggregateAverage = (arr) => arr.reduce((output, player) => {
+    const getAggregateAverage = (arr, aggregate) => arr.reduce((output, player) => {
         return output + +player.aggregateStats[aggregate];
     }, 0) / arr.length;
 
     let iterations = 0,
         maxIterations = 50,
-        possibleTeams = [];
+        possibleTeams = [],
+        allAggregates = Object.keys(players[0].aggregateStats);
 
 
     do {
         let iterationPlayers = players.slice(),
             alpha = [],
             bravo = [],
-            alphaAggregateAverage,
-            bravoAggregateAverage;
+            alphaAggregates = {},
+            bravoAggregates = {};
 
         while (iterationPlayers.length > 0) {
             alpha.push(iterationPlayers.splice(randomIndex(iterationPlayers), 1)[0]);
             bravo.push(iterationPlayers.splice(randomIndex(iterationPlayers), 1)[0]);
         }
 
-        alphaAggregateAverage = Convert.toRoundedValue(getAggregateAverage(alpha), 4);
-        bravoAggregateAverage = Convert.toRoundedValue(getAggregateAverage(bravo), 4);
+        allAggregates.forEach(aggregate => {
+            alphaAggregates[aggregate] = Convert.toRoundedValue(getAggregateAverage(alpha, aggregate), 4)
+            bravoAggregates[aggregate] = Convert.toRoundedValue(getAggregateAverage(bravo, aggregate), 4)
+        });
 
         let duplicate = false;
         for (let i = 0; i < possibleTeams.length; i++) {
@@ -38,9 +41,9 @@ function generateTeams(players = [], aggregate = 'killsDeathsRatio') {
             possibleTeams.push({
                 alpha,
                 bravo,
-                alphaAggregateAverage,
-                bravoAggregateAverage,
-                aggregateAverageDifference: Convert.toRoundedValue(Math.abs(alphaAggregateAverage - bravoAggregateAverage), 4)
+                alphaAggregates,
+                bravoAggregates,
+                aggregateAverageDifference: Convert.toRoundedValue(Math.abs(alphaAggregates[aggregate] - bravoAggregates[aggregate]), 4)
             });
         }
 
@@ -60,8 +63,8 @@ function generateTeams(players = [], aggregate = 'killsDeathsRatio') {
         teams = limitedTeams[randomIndex(limitedTeams)],
         output = {
             aggregate,
-            alphaAggregateAverage: teams.alphaAggregateAverage,
-            bravoAggregateAverage: teams.bravoAggregateAverage,
+            alphaAggregates: teams.alphaAggregates,
+            bravoAggregates: teams.bravoAggregates,
             aggregateAverageDifference: teams.aggregateAverageDifference,
             aggregateStats: {},
             alpha: [],

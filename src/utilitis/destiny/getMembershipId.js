@@ -1,7 +1,9 @@
 const bungie = require('mrdandandan-destiny-api-module').default;
 
 function getMembershipId(displayName, platform) {
-    return bungie.search.searchDestinyPlayer({
+    displayName = encodeURIComponent(displayName);
+
+    return bungie.d2.search.searchDestinyPlayer({
         membershipType: platform,
         displayName: displayName
     })

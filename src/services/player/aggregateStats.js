@@ -14,8 +14,20 @@ let aggregateStatsEndpoint = new ApiEndpoint({
     requestHandler: ({platform, displayName}, {activityMode = ACTIVITY_MODE.AllPvP}) => {
 
         return getMembershipId(displayName, platform)
-            .then(membershipId => bungie.account.summary({membershipType: platform, membershipId}))
-            .then(accountSummaryResponse => processAccountSummary(accountSummaryResponse, activityMode))
+            .then(membershipId => {
+                return bungie.d2.profile.getProfile({membershipType: platform, membershipId, components: '100'});
+            })
+            .then(({profile}) => {
+                const {
+                    characterIds,
+                    userInfo: {
+                        displayName,
+                        membershipId,
+                        membershipType
+                    }
+                } = profile.data;
+                return processAccountSummary(characterIds, membershipId, membershipType, activityMode);
+            })
             .then(doAggregateStats)
             .then(aggregateStats => {
                 return {
@@ -28,24 +40,12 @@ let aggregateStatsEndpoint = new ApiEndpoint({
 
 module.exports = aggregateStatsEndpoint;
 
-function processAccountSummary({characters, membershipId, membershipType}, activityMode) {
-    let promises = characters.map(character => {
-        const {
-            emblemPath,
-            backgroundPath,
-            characterBase
-        } = character;
-        const {
+function processAccountSummary(characterIds, membershipId, membershipType, activityMode) {
+    let promises = characterIds.map(characterId => {
+        return bungie.d2.stats.getHistoricalStats({
             characterId,
-            raceHash,
-            genderHash,
-            classHash
-        } = characterBase;
-
-        return bungie.stats.all({
             membershipType,
             membershipId,
-            characterId,
             modes: activityMode
         }).then(stats => {
             let allStats = stats[Convert.toUncapitalized(ACTIVITY_MODE.toString(+activityMode))];
@@ -54,11 +54,6 @@ function processAccountSummary({characters, membershipId, membershipType}, activ
             return {
                 membershipId,
                 characterId,
-                race: RACE_HASH.toString(raceHash),
-                gender: GENDER_HASH.toString(genderHash),
-                class: CLASS_HASH.toString(classHash),
-                emblem: emblemPath,
-                background: backgroundPath,
                 stats: allStats
             };
         });
