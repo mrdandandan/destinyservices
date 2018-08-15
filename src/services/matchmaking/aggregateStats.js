@@ -24,8 +24,8 @@ let aggregateStatsEndpoint = new ApiEndpoint({
 
         let promises = displayNames.map(displayName => playerAggregateStatsEndpoint.requestHandler({platform, displayName}, {activityMode}));
         return Promise.all(promises)
-            .then(players => _.sortBy(players, o => o.aggregateStats.killsDeathsRatio).reverse())
-            .then(generateTeams);
+            .then(players => _.sortBy(players, o => o.aggregateStats[aggregate]).reverse())
+            .then(players => generateTeams(players, aggregate));
     }
 });
 

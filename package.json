@@ -8,7 +8,7 @@
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "lodash": "^4.17.4",
-    "mrdandandan-destiny-api-module": "^0.0.6"
+    "mrdandandan-destiny-api-module": "^0.1.0"
   },
   "devDependencies": {},
   "scripts": {

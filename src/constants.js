@@ -53,7 +53,8 @@ const GENDER_HASH = new Enumeration({
 
 const PLATFORM = {
     LIVE: 1,
-    PSN: 2
+    PSN: 2,
+    PC: 4
 };
 
 const PARAMETERS = {

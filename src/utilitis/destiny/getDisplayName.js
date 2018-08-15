@@ -1,9 +1,8 @@
 const bungie = require('mrdandandan-destiny-api-module').default;
 
-function getDisplayName(membershipId, platform) {
-    return bungie.user.getBungieAccount({
-        membershipId,
-        membershipType: platform
+function getDisplayName(membershipId) {
+    return bungie.user.getBungieNetUserById({
+        membershipId
     }).then(_unwrapDisplayName);
 }
 
