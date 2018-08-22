@@ -30,3 +30,6 @@ let aggregateStatsEndpoint = new ApiEndpoint({
 });
 
 module.exports = aggregateStatsEndpoint;
+
+
+// http://localhost:8081/api/matchmaking/aggregate-stats/4?displayNames=dasWoj%231113,dandandan%231503,epik%231998,gjein%232953,villealexi%232746,friedpk%231298
