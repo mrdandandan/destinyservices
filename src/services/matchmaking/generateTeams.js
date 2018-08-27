@@ -66,7 +66,7 @@ function generateTeams(players = [], aggregate = 'killsDeathsRatio') {
         maxPossibleTeams = 4;
     }
 
-    let limitedTeams = possibleTeams.slice(0, possibleTeams.length > 5 ? 5 : possibleTeams.length),
+    let limitedTeams = possibleTeams.slice(0, possibleTeams.length > maxPossibleTeams ? maxPossibleTeams : possibleTeams.length),
         teams = limitedTeams[randomIndex(limitedTeams)],
         output = {
             aggregate,
