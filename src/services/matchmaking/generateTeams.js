@@ -76,8 +76,7 @@ function generateTeams(players = [], aggregate = 'killsDeathsRatio') {
             aggregateStats: {},
             alpha: [],
             bravo: [],
-            maxPossibleTeams,
-            possibleTeams: limitedTeams
+            maxPossibleTeams
         };
 
     teams.alpha.forEach(player => {
