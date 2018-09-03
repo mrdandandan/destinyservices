@@ -1,5 +1,6 @@
 const {PLATFORM, ACTIVITY_MODE, GENDER_HASH, RACE_HASH, CLASS_HASH} = require('../../constants');
-const playerAggregateStatsEndpoint = require('../player/aggregateStatsByName');
+const {requestHandler: playerAggregateStatsByName} = require('../player/aggregateStatsByName');
+const {requestHandler: playerAggregateStatsById} = require('../player/aggregateStatsById');
 const generateTeams = require('./generateTeams');
 
 let ApiEndpoint = require('../../utilitis/ApiEndpoint');
@@ -9,21 +10,33 @@ let _ = require('lodash');
 let aggregateStatsEndpoint = new ApiEndpoint({
     name: 'Matchmaking by Aggregate Stats',
     route: 'aggregate-stats/:platform',
-    query: ['oneOf(displayNames|membershipIds)', 'activityMode:optional', 'aggregate:optional'],
+    query: ['oneOrMore(displayNames|membershipIds)', 'activityMode:optional', 'aggregate:optional'],
     method: 'GET',
-    requestHandler: ({platform}, {displayNames = '', membershipIds = '', activityMode = ACTIVITY_MODE.AllPvP, aggregate = 'killsDeathsRatio'}) => {
-        displayNames = displayNames.split(',');
-        if(displayNames.length % 2 === 1) {
+    requestHandler: ({platform}, {displayNames, membershipIds, activityMode = ACTIVITY_MODE.AllPvP, aggregate = 'killsDeathsRatio'}) => {
+        if(!displayNames && !membershipIds) {
             return Promise.reject({
                 details: {
                     displayNames
                 },
-                message: `Number of displayNames provided should be even`
+                message: `Must provide a list of displayName or membershipId`
             });
         }
 
-        let promises = displayNames.map(displayName => playerAggregateStatsEndpoint.requestHandler({platform, displayName}, {activityMode}));
-        return Promise.all(promises)
+        membershipIds = membershipIds ? membershipIds.split(',') : [];
+        displayNames = displayNames ? displayNames.split(','): [];
+        if((displayNames.length + membershipIds.length) % 2 === 1) {
+            return Promise.reject({
+                details: {
+                    displayNames,
+                    membershipIds
+                },
+                message: `Number of displayNames + membershipIds provided should be even`
+            });
+        }
+
+        let displayNamePromises = displayNames.map(displayName => playerAggregateStatsByName({platform, displayName}, {activityMode})),
+            membershipIdPromises = membershipIds.map(membershipId => playerAggregateStatsById({platform, membershipId}, {activityMode}));
+        return Promise.all(displayNamePromises.concat(membershipIdPromises))
             .then(players => _.sortBy(players, o => o.aggregateStats[aggregate]).reverse())
             .then(players => generateTeams(players, aggregate));
     }
