@@ -1,5 +1,5 @@
 const {PLATFORM, ACTIVITY_MODE, GENDER_HASH, RACE_HASH, CLASS_HASH} = require('../../constants');
-const playerAggregateStatsEndpoint = require('../player/aggregateStats');
+const playerAggregateStatsEndpoint = require('../player/aggregateStatsByName');
 const generateTeams = require('./generateTeams');
 
 let ApiEndpoint = require('../../utilitis/ApiEndpoint');
@@ -9,9 +9,9 @@ let _ = require('lodash');
 let aggregateStatsEndpoint = new ApiEndpoint({
     name: 'Matchmaking by Aggregate Stats',
     route: 'aggregate-stats/:platform',
-    query: ['displayNames', 'activityMode:optional', 'aggregate:optional'],
+    query: ['oneOf(displayNames|membershipIds)', 'activityMode:optional', 'aggregate:optional'],
     method: 'GET',
-    requestHandler: ({platform}, {displayNames = '', activityMode = ACTIVITY_MODE.AllPvP, aggregate = 'killsDeathsRatio'}) => {
+    requestHandler: ({platform}, {displayNames = '', membershipIds = '', activityMode = ACTIVITY_MODE.AllPvP, aggregate = 'killsDeathsRatio'}) => {
         displayNames = displayNames.split(',');
         if(displayNames.length % 2 === 1) {
             return Promise.reject({

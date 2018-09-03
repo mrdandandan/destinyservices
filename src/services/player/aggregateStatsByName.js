@@ -1,44 +1,33 @@
 const bungie = require('mrdandandan-destiny-api-module').default;
-const {PLATFORM, ACTIVITY_MODE, GENDER_HASH, RACE_HASH, CLASS_HASH} = require('../../constants');
+const {ACTIVITY_MODE} = require('../../constants');
 
 let ApiEndpoint = require('../../utilitis/ApiEndpoint');
 
 const Convert = require('../../utilitis/Convert');
-const getMembershipId = require('../../utilitis/destiny/getMembershipId');
 
-let aggregateStatsEndpoint = new ApiEndpoint({
-    name: 'Aggregate Character Stats',
-    route: 'aggregate-stats/:platform/:displayName',
+const {requestHandler: aggregateStatsById} = require('./aggregateStatsById');
+const {requestHandler: membershipId} = require('./membershipId');
+
+let aggregateStatsByNameEndpoint = new ApiEndpoint({
+    name: 'Aggregate Character Stats by Name',
+    route: 'aggregate-stats-by-name/:platform/:displayName',
     query: ['activityMode:optional'],
     method: 'GET',
     requestHandler: ({platform, displayName}, {activityMode = ACTIVITY_MODE.AllPvP}) => {
-
-        return getMembershipId(displayName, platform)
-            .then(membershipId => {
-                return bungie.d2.profile.getProfile({membershipType: platform, membershipId, components: '100'});
-            })
-            .then(({profile}) => {
+        return membershipId({platform, displayName})
+            .then(response => {
                 const {
-                    characterIds,
-                    userInfo: {
-                        displayName,
-                        membershipId,
-                        membershipType
-                    }
-                } = profile.data;
-                return processAccountSummary(characterIds, membershipId, membershipType, activityMode);
+                    membershipId
+                } = response;
+                if(!membershipId) {
+                    return Promise.reject('No membership id found')
+                }
+                return aggregateStatsById({platform, membershipId}, {activityMode});
             })
-            .then(doAggregateStats)
-            .then(aggregateStats => {
-                return {
-                    displayName,
-                    aggregateStats
-                };
-            });
     }
 });
 
-module.exports = aggregateStatsEndpoint;
+module.exports = aggregateStatsByNameEndpoint;
 
 function processAccountSummary(characterIds, membershipId, membershipType, activityMode) {
     let promises = characterIds.map(characterId => {

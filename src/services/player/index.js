@@ -1,5 +1,9 @@
-let aggregateStats = require('./aggregateStats');
+let aggregateStatsById = require('./aggregateStatsById');
+let aggregateStatsByName = require('./aggregateStatsByName');
+let membershipId = require('./membershipId');
 
 module.exports = [
-    aggregateStats
+    aggregateStatsById,
+    aggregateStatsByName,
+    membershipId
 ];
